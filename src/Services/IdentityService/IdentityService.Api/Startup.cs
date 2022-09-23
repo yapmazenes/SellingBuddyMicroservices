@@ -1,3 +1,4 @@
+using IdentityService.Api.Application.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,7 @@ namespace IdentityService.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddScoped<IIdentityService, Application.Services.IdentityService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
