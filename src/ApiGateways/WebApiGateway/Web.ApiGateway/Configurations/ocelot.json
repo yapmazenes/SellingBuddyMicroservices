@@ -13,12 +13,7 @@
       //  }
       //],
       "UpstreamPathTemplate": "/catalog/{everything}",
-      "UpstreamHttpMethod": [
-        "Get",
-        "Post",
-        "Delete",
-        "Put"
-      ],
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete", "Put" ],
       "UpstreamScheme": "http"
     },
     {
@@ -37,6 +32,16 @@
       "UpstreamHttpMethod": [
         "Post"
       ],
+      "UpstreamScheme": "http"
+    },
+    {
+      "UseServiceDiscovery": true,
+      "ServiceName": "BasketService",
+
+      "DownstreamPathTemplate": "/api/v1/basket/{everything}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/basket/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete", "Put" ],
       "UpstreamScheme": "http"
     }
   ],
