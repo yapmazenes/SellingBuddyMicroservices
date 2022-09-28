@@ -23,9 +23,9 @@ namespace OrderService.Domain.AggregateModels.BuyerAggregate
             _paymentMethods = new List<PaymentMethod>();
         }
 
-        public Buyer(string identity, string name) : this()
+        public Buyer(string name) : this()
         {
-            IdentityGuid = !string.IsNullOrWhiteSpace(identity) ? identity : throw new ArgumentNullException(nameof(identity));
+            //IdentityGuid = !string.IsNullOrWhiteSpace(identity) ? identity : throw new ArgumentNullException(nameof(identity));
             Name = !string.IsNullOrWhiteSpace(name) ? name : throw new ArgumentNullException(nameof(name));
         }
 

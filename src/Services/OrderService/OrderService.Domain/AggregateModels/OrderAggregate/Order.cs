@@ -33,7 +33,7 @@ namespace OrderService.Domain.AggregateModels.OrderAggregate
             _orderItems = new List<OrderItem>();
         }
 
-        public Order(string userId, string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
+        public Order(string userName, Address address, int cardTypeId, string cardNumber, string cardSecurityNumber,
           string cardHolderName, DateTime cardExpiration, Guid? buyerId = null, Guid? paymentMethodId = null) : this()
         {
             BuyerId = buyerId;
@@ -44,11 +44,11 @@ namespace OrderService.Domain.AggregateModels.OrderAggregate
 
             // Add the OrderStarterDomainEvent to the domain events collection 
             // to be raised/dispatched when comitting changes into the Database [ After DbContext.SaveChanges() ]
-            AddOrderStartedDomainEvent(userId, userName, cardTypeId, cardNumber,
+            AddOrderStartedDomainEvent(userName, cardTypeId, cardNumber,
                                         cardSecurityNumber, cardHolderName, cardExpiration);
         }
 
-        private void AddOrderStartedDomainEvent(string userId, string userName, int cardTypeId, string cardNumber,
+        private void AddOrderStartedDomainEvent(string userName, int cardTypeId, string cardNumber,
          string cardSecurityNumber, string cardHolderName, DateTime cardExpiration)
         {
             var orderStartedDomainEvent = new OrderStartedDomainEvent(userName, cardTypeId, cardNumber,
@@ -61,7 +61,7 @@ namespace OrderService.Domain.AggregateModels.OrderAggregate
         // This Order AggregateRoot's method "AddOrderitem()" should be the only way to add Items to the Order,
         // so any behavior (discounts, etc.) and validations are controlled by the AggregateRoot 
         // in order to maintain consistency between the whole Aggregate. 
-        public void AddOrderItem(int productId, string productName, decimal unitPrice, decimal discount, string pictureUrl, int units = 1)
+        public void AddOrderItem(int productId, string productName, decimal unitPrice, string pictureUrl, int units = 1)
         {
             //add validated new order item
 
