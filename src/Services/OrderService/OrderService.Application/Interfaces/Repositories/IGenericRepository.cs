@@ -12,7 +12,7 @@ namespace OrderService.Application.Interfaces.Repositories
     {
         Task<List<T>> GetAll();
 
-        Task<List<T>> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> order = null);
+        Task<List<T>> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> order = null, params Expression<Func<T, object>>[] includes);
         Task<List<T>> Get(Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] includes);
         Task<T> GetByIdAsync(Guid id);
         Task<T> GetByIdAsync(Guid id, params Expression<Func<T, object>>[] includes);
