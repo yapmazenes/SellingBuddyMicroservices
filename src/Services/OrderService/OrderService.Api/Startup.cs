@@ -1,3 +1,6 @@
+using EventBus.Base;
+using EventBus.Base.Abstraction;
+using EventBus.Factory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OrderService.Api.Extensions.Registration.EventHandlerRegistration;
+using OrderService.Api.Extensions.Registration.ServiceDiscovery;
+using OrderService.Api.IntegrationEvents.EventHandlers;
+using OrderService.Api.IntegrationEvents.Events;
+using OrderService.Application;
+using OrderService.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +41,8 @@ namespace OrderService.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OrderService.Api", Version = "v1" });
             });
+
+            ConfigureService(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +65,36 @@ namespace OrderService.Api
             {
                 endpoints.MapControllers();
             });
+
+            ConfigureEventBusForSubscription(app);
         }
+        private void ConfigureService(IServiceCollection services)
+        {
+            services.AddLogging(configure => configure.AddConsole())
+                    .AddApplicationRegistration(typeof(Startup))
+                    .AddPersistenceRegistration(Configuration)
+                    .ConfigureEventHandlers()
+                    .ConfigureConsul(Configuration);
+
+            services.AddSingleton<IEventBus>(sp =>
+
+            EventBusFactory.Create(new()
+            {
+                ConnectionRetryCount = 5,
+                EventNameSuffix = "IntegrationEvent",
+                SubscriberClientAppName = "OrderService",
+                EventBusType = EventBusType.RabbitMQ
+            }, sp)
+
+        );
+        }
+
+        private void ConfigureEventBusForSubscription(IApplicationBuilder applicationBuilder)
+        {
+            var eventBus = applicationBuilder.ApplicationServices.GetRequiredService<IEventBus>();
+
+            eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+        }
+
     }
 }
