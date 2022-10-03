@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +8,8 @@ using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
+using System;
+using Web.ApiGateway.Infrastructure;
 
 namespace Web.ApiGateway
 {
@@ -29,6 +32,8 @@ namespace Web.ApiGateway
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.ApiGateway", Version = "v1" });
             });
+
+            ConfigureHttpClient(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +58,21 @@ namespace Web.ApiGateway
             });
 
             await app.UseOcelot();
+        }
+
+        private void ConfigureHttpClient(IServiceCollection services)
+        {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddHttpClient("basket", c =>
+            {
+                c.BaseAddress = new Uri(Configuration["Urls:basket"]);
+            }).AddHttpMessageHandler<HttpClientDelegatingHandler>();
+
+            services.AddHttpClient("catalog", c =>
+            {
+                c.BaseAddress = new Uri(Configuration["Urls:catalog"]);
+            }).AddHttpMessageHandler<HttpClientDelegatingHandler>();
         }
     }
 }
