@@ -20,7 +20,7 @@ namespace Web.ApiGateway.Services
             var client = _httpClientFactory.CreateClient("basket");
             var response = await client.GetResponseAsync<BasketData>(id);
 
-            return response;
+            return response ?? new BasketData(id);
         }
 
         public async Task<BasketData> UpdateAsync(BasketData currentBasket)

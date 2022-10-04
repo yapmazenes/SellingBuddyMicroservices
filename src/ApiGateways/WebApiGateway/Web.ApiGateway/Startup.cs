@@ -10,6 +10,8 @@ using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
 using System;
 using Web.ApiGateway.Infrastructure;
+using Web.ApiGateway.Services;
+using Web.ApiGateway.Services.Interfaces;
 
 namespace Web.ApiGateway
 {
@@ -31,6 +33,18 @@ namespace Web.ApiGateway
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web.ApiGateway", Version = "v1" });
+            });
+
+            services.AddScoped<ICatalogService, CatalogService>();
+            services.AddScoped<IBasketService, BasketService>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                     builder => builder.SetIsOriginAllowed((host) => true)
+                         .AllowAnyMethod()
+                         .AllowAnyHeader()
+                         .AllowCredentials());
             });
 
             ConfigureHttpClient(services);
