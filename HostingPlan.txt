@@ -1,0 +1,17 @@
+﻿
+Steps
+
+1) Add Docker Compose support
+2) ocelot.json url changes from localhost:5000 to webapigateway.api:5000. For Consul from localhost to c_consul. All appsettings.json file Consul Url changes.
+3) Web.ApiGateway/appsettings.json basket from localhost to basketservice.api. Catalog from localhost to catalogservice.api
+4) BasketService.Api/Configurations/appsettings.json RedisSettings.ConnectionString from localhost to s_redis. ConsulConfig.Address from localhost to c_consul
+5) All serilog.Development.json from localhost or 127.0.0.1 to c_graylog
+6) ConsulRegistration.cs changes to get real address from config instead of 'server.Features'
+7) Program.cs changes, UseDefaultServiceProvider
+8) Startup.cs changes for RabbitMQ default url to change from localhost to c_rabbitmq
+9) CatalogService.Api/Configurations/appsettings.json, ConnectionString change from localhost to c_sqlserver
+10) CatalogContextDesignFactory.cs and OrderDbContextDesignFactory.cs, ConnectionString	change from localhost to c_sqlserver
+11) Create external networks on Docker so Graylog can use
+
+Explanation;
+Nginx config to publish BlazorUI

@@ -2,6 +2,7 @@ using CatalogService.Api.Extensions;
 using CatalogService.Api.Infrastructure.Context;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,11 @@ namespace CatalogService.Api
 
         public static IWebHost CreateHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .UseDefaultServiceProvider((context, options) =>
+            {
+                options.ValidateOnBuild = false;
+                options.ValidateScopes = false;
+            })
             .UseStartup<Startup>()
             .UseWebRoot("Pics")
             .UseContentRoot(Directory.GetCurrentDirectory())
